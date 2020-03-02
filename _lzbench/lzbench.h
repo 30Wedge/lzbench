@@ -110,6 +110,7 @@ struct less_using_3rd_column { inline bool operator() (const string_table_t& str
 struct less_using_4th_column { inline bool operator() (const string_table_t& struct1, const string_table_t& struct2) {  return (struct1.col4_comprsize < struct2.col4_comprsize); } };
 struct less_using_5th_column { inline bool operator() (const string_table_t& struct1, const string_table_t& struct2) {  return (struct1.col5_origsize < struct2.col5_origsize); } };
 
+// Return the actual size of the output compression
 typedef int64_t (*compress_func)(char *in, size_t insize, char *out, size_t outsize, size_t, size_t, char*);
 typedef char* (*init_func)(size_t insize, size_t, size_t);
 typedef void (*deinit_func)(char* workmem);
@@ -137,7 +138,7 @@ typedef struct
 
 
 
-#define LZBENCH_COMPRESSOR_COUNT 71
+#define LZBENCH_COMPRESSOR_COUNT 72
 
 static const compressor_desc_t comp_desc[LZBENCH_COMPRESSOR_COUNT] =
 {
@@ -212,6 +213,7 @@ static const compressor_desc_t comp_desc[LZBENCH_COMPRESSOR_COUNT] =
     { "zstd22LDM",  "1.4.3",       1,  22,   22,       0, lzbench_zstd_LDM_compress,   lzbench_zstd_decompress,       lzbench_zstd_LDM_init,   lzbench_zstd_deinit },
     { "zstd24LDM",  "1.4.3",       1,  22,   24,       0, lzbench_zstd_LDM_compress,   lzbench_zstd_decompress,       lzbench_zstd_LDM_init,   lzbench_zstd_deinit },
     { "nakamichi",  "okamigan",    0,   0,    0,       0, lzbench_nakamichi_compress,  lzbench_nakamichi_decompress,  NULL,                    NULL },
+    { "zopfli",     "1.0.3",       0,   0,    0,       0, lzbench_zopfli_compress,     lzbench_zopfli_decompress,     NULL,                    NULL },
 };
 
 

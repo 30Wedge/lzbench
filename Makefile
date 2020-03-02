@@ -176,6 +176,15 @@ MISC_FILES += lzlib/lzlib.o blosclz/blosclz.o blosclz/fastcopy.o slz/slz.o
 
 LZBENCH_FILES = _lzbench/lzbench.o _lzbench/compressors.o _lzbench/csc_codec.o
 
+# AM - tmp for development from separate repo
+Z_D = ../zopfli/src/zopfli
+DEFINES += -I$(Z_D)
+ZOPFLI_FILES =  $(Z_D)/blocksplitter.c $(Z_D)/cache.c $(Z_D)/deflate.c
+ZOPFLI_FILES += $(Z_D)/gzip_container.c $(Z_D)/hash.c $(Z_D)/katajainen.o $(Z_D)/lz77.c
+ZOPFLI_FILES += $(Z_D)/squeeze.c $(Z_D)/tree.c $(Z_D)/util.c $(Z_D)/zlip_container.c
+ZOPFLI_FILES += $(Z_D)/zopfli_bin.c $(Z_D)/zopfli_lib.c
+ZOPFLI_SO = $(Z_D)/../../libzopfli.a
+
 ifeq "$(DONT_BUILD_BZIP2)" "1"
     DEFINES += -DBENCH_REMOVE_BZIP2
 else
@@ -303,10 +312,14 @@ nakamichi/Nakamichi_Okamigan.o: nakamichi/Nakamichi_Okamigan.c
 	@$(MKDIR) $(dir $@)
 	$(CC) $(CFLAGS) -mavx $< -c -o $@
 
+# Always rely on the Zopfli makefile to keep it up to date
+$(ZOPFLI_SO):
+	cd $(Z_D)/../.. && $(MAKE)
+# /AM
 
 _lzbench/lzbench.o: _lzbench/lzbench.cpp _lzbench/lzbench.h
 
-lzbench: $(BZIP2_FILES) $(DENSITY_FILES) $(FASTLZMA2_OBJ) $(ZSTD_FILES) $(GLZA_FILES) $(LZSSE_FILES) $(LZFSE_FILES) $(XPACK_FILES) $(GIPFELI_FILES) $(XZ_FILES) $(LIBLZG_FILES) $(BRIEFLZ_FILES) $(LZF_FILES) $(LZRW_FILES) $(BROTLI_FILES) $(CSC_FILES) $(LZMA_FILES) $(ZLING_FILES) $(QUICKLZ_FILES) $(SNAPPY_FILES) $(ZLIB_FILES) $(LZHAM_FILES) $(LZO_FILES) $(UCL_FILES) $(LZMAT_FILES) $(LZ4_FILES) $(LIBDEFLATE_FILES) $(MISC_FILES) $(LZBENCH_FILES)
+lzbench: $(BZIP2_FILES) $(DENSITY_FILES) $(FASTLZMA2_OBJ) $(ZSTD_FILES) $(GLZA_FILES) $(LZSSE_FILES) $(LZFSE_FILES) $(XPACK_FILES) $(GIPFELI_FILES) $(XZ_FILES) $(LIBLZG_FILES) $(BRIEFLZ_FILES) $(LZF_FILES) $(LZRW_FILES) $(BROTLI_FILES) $(CSC_FILES) $(LZMA_FILES) $(ZLING_FILES) $(QUICKLZ_FILES) $(SNAPPY_FILES) $(ZLIB_FILES) $(LZHAM_FILES) $(LZO_FILES) $(UCL_FILES) $(LZMAT_FILES) $(LZ4_FILES) $(LIBDEFLATE_FILES) $(MISC_FILES) $(LZBENCH_FILES) $(ZOPFLI_SO)
 	$(CXX) $^ -o $@ $(LDFLAGS)
 	@echo Linked GCC_VERSION=$(GCC_VERSION) CLANG_VERSION=$(CLANG_VERSION) COMPILER=$(COMPILER)
 

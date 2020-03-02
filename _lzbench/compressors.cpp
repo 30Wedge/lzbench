@@ -1779,3 +1779,26 @@ int64_t lzbench_nakamichi_decompress(char *inbuf, size_t insize, char *outbuf, s
 }
 
 #endif
+
+#ifndef BENCH_REMOVE_zopfli
+#include "zopfli.h"
+
+int64_t lzbench_zopfli_compress(char *inbuf, size_t insize, char *outbuf, size_t outsize, size_t level, size_t, char*)
+{
+    ZopfliOptions zo;
+    ZopfliInitOptions(&zo);
+    size_t real_outsize=outsize; 
+
+    ZopfliCompress(&zo, ZOPFLI_FORMAT_ZLIB, (const unsigned char *) inbuf, insize, (unsigned char **) &outbuf, &real_outsize);
+    // There's a chance that real_outsize could be greater than outsize, zopfli will reallocate the memory as required
+    // How to handle that?
+	return real_outsize;
+}
+
+// wrapper for zlib
+int64_t lzbench_zopfli_decompress(char *inbuf, size_t insize, char *outbuf, size_t outsize, size_t a, size_t b, char* c)
+{
+    return lzbench_lzlib_decompress(inbuf, insize, outbuf,  outsize, a, b, c);
+}
+
+#endif // BENCH_REMOVE_CRUSH
