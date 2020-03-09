@@ -1787,12 +1787,12 @@ int64_t lzbench_zopfli_compress(char *inbuf, size_t insize, char *outbuf, size_t
 {
     ZopfliOptions zo;
     ZopfliInitOptions(&zo);
-    size_t real_outsize=outsize; 
+    size_t output_comp_len=0; 
 
-    ZopfliCompress(&zo, ZOPFLI_FORMAT_ZLIB, (const unsigned char *) inbuf, insize, (unsigned char **) &outbuf, &real_outsize);
+    ZopfliCompress(&zo, ZOPFLI_FORMAT_ZLIB, (const unsigned char *) inbuf, insize, (unsigned char **) &outbuf, &output_comp_len, outsize);
     // There's a chance that real_outsize could be greater than outsize, zopfli will reallocate the memory as required
     // How to handle that?
-	return real_outsize;
+	return output_comp_len;
 }
 
 // wrapper for zlib
